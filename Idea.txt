@@ -1,0 +1,33 @@
+- for adding pet:
+    - create a frame to choose which kind of pet will be added
+    - for each class clicked: create an object of that pet, call the get info method --> frame to input info
+    - click save --> save the data to file .txt or .csv or something like that
+- for checking status:
+    - if the status item is clicked: --> a frame showing list of pets in stock appears
+    - click on which pet --> create an object of that pet and call generateStatus() method, in reality can use showStatus
+    ,but we don't have
+
+
+
+--------------------------------
+ID | Name | Age | Species
+--------------------------------
+
+----------------------
+ID| cost_in | cost_out --> be accessed through calculating income/outcome phase
+ ---> auto update price P = 110% cost
+
+
+
+-----------
+ID | Class  --> access .txt file of each pet
+-----------
+
+class updateStatus()
+
+--------------------------------
+Monthly Transaction:
+ID | money | cummulative finance +- money
+
+--------------------------------
+month | money
