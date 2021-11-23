@@ -19,7 +19,7 @@ public class DeleteFile {
                 {
                     if(!item.equals(data_line))
                     {
-                        fw.write(item);
+                        fw.write(item + "\n");
                     }
                 }
                 fw.close();

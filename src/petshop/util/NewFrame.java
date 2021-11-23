@@ -97,10 +97,11 @@ public class NewFrame {
 
            class SellButton extends JButton
            {
-                  SellButton(String data_line)
+                  SellButton(String data_line) //data_line = ID, class
                   {
                          this.setText("Sell");
                          ActionListener action = e->{
+                                ModifyBalance.AddSoldToBalance(data_line);
                                 if(DeleteFile.DeleteDataAndCost(data_line))
                                 {
                                        this.setText("Sold");
@@ -119,7 +120,6 @@ public class NewFrame {
                   pet_list.add(new ViewButton(list_of_pet));
                   pet_list.add(new SellButton(list_of_pet));
            }
-
            list_frame.getContentPane().add(BorderLayout.NORTH, pet_list);
            list_frame.setVisible(true);
     }

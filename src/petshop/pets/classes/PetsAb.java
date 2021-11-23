@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionListener;
 import java.io.FileWriter;
 import java.util.Random;
+import petshop.util.*;
 
 public class PetsAb {
     protected String[] mood = {"Happy", "Hungry", "Thirsty", "Sick", "Healthy"};
@@ -81,11 +82,11 @@ public class PetsAb {
             save_info();
             save_cost();
             save_pet();
+            ModifyBalance.AddBuyToBalance(this.ID, this.price);
             input_frame.dispose();
         };
         ActionListener exit_1 = e ->
         {
-            //this.isAdded = false;
             input_frame.dispose();
         };
         ActionListener pr = e->System.out.println(this.isAdded);
@@ -94,7 +95,6 @@ public class PetsAb {
         cancel.addActionListener(exit_1);
         input_frame.setVisible(true);
     }
-
     public void save_info()
     {
         try{
