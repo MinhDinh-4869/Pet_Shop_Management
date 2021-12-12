@@ -2,13 +2,12 @@ package petshop.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import java.io.File;
-import java.io.FileWriter;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-import petshop.pets.classes.*;
+import petshop.PetClasses.Cat;
+import petshop.PetClasses.Dog;
+import petshop.PetClasses.*;
 
 public class NewFrame {
     public static void CreateFrameToChoosePetToAdd()
@@ -24,7 +23,7 @@ public class NewFrame {
            ActionListener dog_chose = e -> {
                   choose_pet.dispose();
                   Dog new_dog = new Dog();
-                  new_dog.CreateFrameToGetInfo();
+                  //new_dog.CreateFrameToGetInfo();
                   //return new_dog;
            };
            dog.addActionListener(dog_chose);
@@ -33,7 +32,7 @@ public class NewFrame {
            ActionListener cat_choose = e->{
                   choose_pet.dispose();
                   Cat new_cat = new Cat();
-                  new_cat.CreateFrameToGetInfo();
+                  //new_cat.CreateFrameToGetInfo();
            };
            cat.addActionListener(cat_choose);
            //***************************************************

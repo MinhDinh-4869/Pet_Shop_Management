@@ -1,4 +1,4 @@
-package petshop.pets.classes;
+package petshop.PetClasses;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;

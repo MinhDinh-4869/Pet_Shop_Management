@@ -2,7 +2,7 @@ package petshop.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import petshop.pets.classes.*;
+import petshop.PetClasses.*;
 public class GUI {
     public static JFrame CreateMainGUI()
     {
