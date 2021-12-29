@@ -2,7 +2,7 @@ package petshop.util;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
-import petshop.PetClasses.*;
+
 public class GUI {
     public static JFrame CreateMainGUI()
     {
@@ -38,8 +38,8 @@ public class GUI {
         ActionListener get_pet = e-> NewFrame.CreateFrameToChoosePetToAdd();
         pet_in.addActionListener(get_pet);
 
-        ActionListener sell_pet = e->NewFrame.CreateFrameToShowListOfPetInStock();
-        pet_out.addActionListener(sell_pet);
+        //ActionListener sell_pet = e->NewFrame.CreateFrameToShowListOfPetInStock();
+        //pet_out.addActionListener(sell_pet);
 
         // Add components to frame
         main_frame.getContentPane().add(BorderLayout.NORTH, mb);

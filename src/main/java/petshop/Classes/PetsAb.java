@@ -1,4 +1,4 @@
-package petshop.PetClasses;
+package petshop.Classes;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
@@ -86,9 +86,8 @@ public class PetsAb {
             input_frame.dispose();
         };
         ActionListener exit_1 = e ->
-        {
-            input_frame.dispose();
-        };
+                input_frame.dispose();
+
         ActionListener pr = e->System.out.println(this.isAdded);
         print.addActionListener(pr);
         add.addActionListener(exit);

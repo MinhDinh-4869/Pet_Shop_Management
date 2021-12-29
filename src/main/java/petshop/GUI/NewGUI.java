@@ -41,34 +41,34 @@ public class NewGUI {
         /* Copied from old file */
         JMenuBar mb = new JMenuBar();
         JMenu mn1 = new JMenu("Pets");
-        JMenu mn2 = new JMenu("Finance");
-        JMenu mn3 = new JMenu("Accessories Shop");
-        JMenu mn4 = new JMenu("Customer Service");
+        JMenu mn2 = new JMenu("Customers");
+        JMenu mn3 = new JMenu("Accessories");
+        JMenu mn4 = new JMenu("Finance");
 
         mb.add(mn1);
         mb.add(mn2);
         mb.add(mn3);
         mb.add(mn4);
         // Pets items:
-        JMenuItem pet_in = new JMenuItem("Pet IN");
-        JMenuItem pet_out = new JMenuItem("Pet OUT");
-        JMenuItem stock = new JMenuItem("Pet in Stock");
-        JMenuItem status = new JMenuItem("Pet Status");
-        JMenuItem money = new JMenuItem("Total");
+        JMenuItem pet_in = new JMenuItem("Add Pets");
+        JMenuItem pet_out = new JMenuItem("Show Pets");
+        //JMenuItem stock = new JMenuItem("Pet in Stock");
+        //JMenuItem status = new JMenuItem("Pet Status");
+        //JMenuItem money = new JMenuItem("Total");
 
 
         // Add items to menu
         mn1.add(pet_in);
         mn1.add(pet_out);
-        mn1.add(stock);
-        mn1.add(status);
-        mn2.add(money);
+        //mn1.add(stock);
+        //mn1.add(status);
+        //mn2.add(money);
         // Event Listener
         ActionListener get_pet = e-> NewFrame.CreateFrameToChoosePetToAdd();
         pet_in.addActionListener(get_pet);
 
-        //ActionListener sell_pet = e->NewFrame.CreateFrameToShowListOfPetInStock();
-        //pet_out.addActionListener(sell_pet);
+        ActionListener sell_pet = e->NewFrame.CreateFrameToFilterPets();
+        pet_out.addActionListener(sell_pet);
 
         // Add components to frame
         main_frame.getContentPane().add(BorderLayout.NORTH, mb);

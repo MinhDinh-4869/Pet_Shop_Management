@@ -5,9 +5,8 @@ import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
 
-import petshop.PetClasses.Cat;
-import petshop.PetClasses.Dog;
-import petshop.PetClasses.*;
+import petshop.Classes.Cat;
+import petshop.Classes.Dog;
 
 public class NewFrame {
     public static void CreateFrameToChoosePetToAdd()
@@ -63,6 +62,7 @@ public class NewFrame {
            sell_pet.setVisible(true);
     }
 */
+       /*
     public static void CreateFrameToShowListOfPetInStock()
     {
            JFrame list_frame = new JFrame("List of Pets");
@@ -122,4 +122,6 @@ public class NewFrame {
            list_frame.getContentPane().add(BorderLayout.NORTH, pet_list);
            list_frame.setVisible(true);
     }
+
+        */
 }

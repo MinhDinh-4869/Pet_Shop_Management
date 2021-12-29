@@ -1,0 +1,388 @@
+package petshop.GUI;
+
+import petshop.Classes.Cat;
+import petshop.Classes.Dog;
+import petshop.Classes.Pets;
+import petshop.Database.PostgreSQLJDBC;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionListener;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+
+class FilterPanel extends JPanel{
+
+    public void UpdatePetList(String[] ids)
+    {
+        this.removeAll();
+        this.setLayout(new GridLayout(ids.length, 2));
+
+        for(String id : ids)
+        {
+            System.out.println(id);
+            this.add(new JLabel(id));
+            this.add(new ViewButton(id));
+        }
+
+        this.revalidate();
+        this.repaint();
+    }
+}
+
+class ViewButton extends JButton
+{
+    ViewButton(String id)
+    {
+        super();
+        final Pets p = new Pets(id);
+        this.setText("View");
+        ActionListener click_event = e->
+        {
+            p.getInfo();
+        };
+        this.addActionListener(click_event);
+    }
+}
+
+public class NewFrame {
+    public static void CreateFrameToChoosePetToAdd()
+    {
+        JFrame choose_pet = new JFrame("Add Pet");
+        //ActionListener exit = e-> choose_pet.dispose();
+        choose_pet.setSize(200, 200);
+
+        JPanel pet_list = new JPanel();
+        pet_list.setLayout(new GridLayout(2,2));
+        //************ CODE BLOCK FOR DOG BUTTON ************
+        JButton dog = new JButton("Dog");
+        ActionListener dog_chose = e -> {
+            choose_pet.dispose();
+            Dog new_dog = new Dog();
+            new_dog.setInfo();
+            //return new_dog;
+        };
+        dog.addActionListener(dog_chose);
+        //************ CODE BLOCK FOR CAT BUTTON ************
+        JButton cat = new JButton("Cat");
+        ActionListener cat_choose = e->{
+            choose_pet.dispose();
+            Cat c = new Cat();
+            c.setInfo();
+        };
+        cat.addActionListener(cat_choose);
+        //***************************************************
+
+        pet_list.add(dog);
+        pet_list.add(cat);
+        choose_pet.getContentPane().add(BorderLayout.CENTER, pet_list);
+        choose_pet.setVisible(true);
+    }
+
+    static void CreateFrameToShowPetInfo(String id)
+    {
+        JFrame info_frame = new JFrame("Pet's Info");
+        info_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        info_frame.setSize(400,400);
+
+        JPanel info_session = new JPanel();
+        info_session.setLayout(new GridLayout(5,2));
+
+        try
+        {
+            ResultSet rs = PostgreSQLJDBC.Read("SELECT * FROM pet p join species s on " +
+                    "(p.breed = s.breed) WHERE pet_id = '"+id+"';");
+            rs.next();
+            String pet_name = rs.getString("pet_name");
+            int age = rs.getInt("age");
+            String breed = rs.getString("breed");
+            String species = rs.getString("species");
+            double price = rs.getDouble("price_in") * 1.1;
+            info_session.add(new JLabel("Pet's Name: "));
+            info_session.add(new JLabel(pet_name));
+            info_session.add(new JLabel("Pet's Age: "));
+            info_session.add(new JLabel("" + age));
+            info_session.add(new JLabel("Pet's Species: "));
+            info_session.add(new JLabel(species));
+            info_session.add(new JLabel("Pet's Breed: "));
+            info_session.add(new JLabel(breed));
+            info_session.add(new JLabel("Pet's base price: "));
+            info_session.add(new JLabel("" + price));
+            PostgreSQLJDBC.CloseStatement();
+        }
+        catch (SQLException ect)
+        {
+            ect.printStackTrace();
+        }
+        info_frame.getContentPane().add(BorderLayout.CENTER, info_session);
+        info_frame.setVisible(true);
+    }
+
+    public static void CreateFrameToShowListOfPetInStock()
+    {
+        //Init frame
+        JFrame list_frame = new JFrame("List of Pets");
+        list_frame.setSize(400,400);
+        list_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+        //Count number of pets
+        //can be replaced by CountResult()
+        int total_no_of_pet = 0;
+        try{
+            ResultSet rs = PostgreSQLJDBC.Read("SELECT count(*) FROM pet;");
+            rs.next();
+            total_no_of_pet = rs.getInt(1);
+            PostgreSQLJDBC.CloseStatement();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        JPanel pet_list = new JPanel();
+        pet_list.setLayout(new GridLayout(total_no_of_pet, 2));
+
+        //Get pet id
+        String[] list_of_ids = new String[total_no_of_pet];
+        try{
+            ResultSet rs = PostgreSQLJDBC.Read("SELECT pet_id FROM pet;");
+            int index = 0;
+            while(rs.next())
+            {
+                list_of_ids[index] = rs.getString("pet_id");
+                index++;
+            }
+            PostgreSQLJDBC.CloseStatement();
+        }
+        catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        //extend class view button
+        class ViewButton extends JButton
+        {
+            ViewButton(String id)
+            {
+                super();
+                this.setText("View");
+                ActionListener click_event = e->
+                        CreateFrameToShowPetInfo(id);
+                this.addActionListener(click_event);
+            }
+        }
+
+        //add to list
+        for (String id : list_of_ids) {
+            pet_list.add(new JLabel(id));
+            pet_list.add(new ViewButton(id));
+            //pet_list.add(new SellButton(list_of_pet));
+        }
+        list_frame.getContentPane().add(BorderLayout.NORTH, pet_list);
+        list_frame.setVisible(true);
+        /*
+
+        //for each
+
+        class ViewButton extends JButton
+        {
+            ViewButton(String path){
+                this.setText("View");
+                ActionListener action = e -> {
+                    List<String> elements = Arrays.asList(path.split(","));
+                    String data_path = "./dat/" + elements.get(1) + "/" + elements.get(0) + ".txt";
+                    if(DataReader.CheckFileExist(data_path))
+                    {
+                        String[] data = DataReader.ReadLines(data_path);
+                        System.out.println("Pet data: " + data[0]);
+                    }
+                    else
+                    {
+                        this.setEnabled(false);
+                    }
+                };
+                this.addActionListener(action);
+            }
+        }
+
+        class SellButton extends JButton
+        {
+            SellButton(String data_line) //data_line = ID, class
+            {
+                this.setText("Sell");
+                ActionListener action = e->{
+                    ModifyBalance.AddSoldToBalance(data_line);
+                    if(DeleteFile.DeleteDataAndCost(data_line))
+                    {
+                        this.setText("Sold");
+                        this.setEnabled(false);
+                    }
+                    else
+                    {
+                        System.out.println("Can not delete data");
+                    }
+                };
+                this.addActionListener(action);
+            }
+        }
+
+*/
+    }
+
+    // can be removed
+
+
+    /*
+    public static void CreateFrameToFilterPets()
+    {
+        JFrame filter_frame = new JFrame("Search");
+        filter_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        filter_frame.setSize(400, 400);
+
+        JPanel filter_session = new JPanel();
+        FilterPanel result_session = new FilterPanel();
+        filter_session.setLayout(new GridLayout(3, 2));
+
+        int no_of_specs = CountResult("SELECT count(distinct species) FROM species");
+        String[] list_of_specs = new String[no_of_specs];
+        try{
+            ResultSet rs = PostgreSQLJDBC.Read("SELECT distinct species FROM species");
+            int idx = 0;
+            while(rs.next())
+            {
+                list_of_specs[idx] = rs.getString("species");
+                idx++;
+            }
+            PostgreSQLJDBC.CloseStatement();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        JComboBox<String> specs = new JComboBox<>(list_of_specs);
+        JTextField age_tf = new JTextField(10);
+        JButton search = new JButton("Search");
+        filter_session.add(new JLabel("Age: "));
+        filter_session.add(age_tf);
+        filter_session.add(new JLabel("Species: "));
+        filter_session.add(specs);
+        filter_session.add(search);
+
+        //Datatype for lambda expression
+        AtomicInteger age = new AtomicInteger(-1);
+        AtomicReference<String> species = new AtomicReference<>("");
+
+        ActionListener filter = e ->{
+            age.set(Integer.parseInt(age_tf.getText()));
+            species.set(specs.getItemAt(specs.getSelectedIndex()));
+
+            int no_of_pets = CountResult("SELECT count(*) FROM pet p join species s on " +
+                    "(p.breed = s.breed) WHERE p.age = " + age.get() + " and s.species = " +
+                    PostgreSQLJDBC.S2S(species.get()) + ";");
+            String[] ids = new String[no_of_pets];
+            try
+            {
+                ResultSet rs = PostgreSQLJDBC.Read("SELECT pet_id FROM pet p join species s on " +
+                        "(p.breed = s.breed) WHERE p.age = " + age.get() + " and s.species = " +
+                        PostgreSQLJDBC.S2S(species.get()) + ";");
+                int idx = 0;
+                while(rs.next())
+                {
+                    ids[idx] = rs.getString("pet_id");
+                    idx++;
+                }
+                PostgreSQLJDBC.CloseStatement();
+            }
+            catch (SQLException exp)
+            {
+                exp.printStackTrace();
+            }
+            result_session.UpdatePetList(ids);
+        };
+        search.addActionListener(filter);
+
+        filter_frame.getContentPane().add(BorderLayout.NORTH, filter_session);
+        //filter_frame.getContentPane().add(BorderLayout.CENTER, search);
+        filter_frame.getContentPane().add(BorderLayout.SOUTH,result_session);
+        filter_frame.setVisible(true);
+    }
+    */
+    public static void CreateFrameToFilterPets()
+    {
+        JFrame filter_frame = new JFrame("Search");
+        filter_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        filter_frame.setSize(400, 400);
+
+        JPanel filter_session = new JPanel();
+        FilterPanel result_session = new FilterPanel();
+        filter_session.setLayout(new GridLayout(3, 2));
+
+        int no_of_specs = PostgreSQLJDBC.CountResult("SELECT count(distinct species) FROM species");
+        String[] list_of_specs = new String[no_of_specs];
+        try{
+            ResultSet rs = PostgreSQLJDBC.Read("SELECT distinct species FROM species");
+            int idx = 0;
+            while(rs.next())
+            {
+                list_of_specs[idx] = rs.getString("species");
+                idx++;
+            }
+            PostgreSQLJDBC.CloseStatement();
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
+
+        JComboBox<String> specs = new JComboBox<>(list_of_specs);
+        JTextField age_tf = new JTextField(10);
+        JButton search = new JButton("Search");
+        filter_session.add(new JLabel("Age: "));
+        filter_session.add(age_tf);
+        filter_session.add(new JLabel("Species: "));
+        filter_session.add(specs);
+        filter_session.add(search);
+
+        //Datatype for lambda expression
+        AtomicInteger age = new AtomicInteger(-1);
+        AtomicReference<String> species = new AtomicReference<>("");
+
+        ActionListener filter = e ->{
+            age.set(Integer.parseInt(age_tf.getText()));
+            species.set(specs.getItemAt(specs.getSelectedIndex()));
+
+            int no_of_pets = PostgreSQLJDBC.CountResult("SELECT count(*) FROM pet p join species s on " +
+                    "(p.breed = s.breed) WHERE p.age = " + age.get() + " and s.species = " +
+                    PostgreSQLJDBC.S2S(species.get()) + ";");
+            String[] ids = new String[no_of_pets];
+            try
+            {
+                ResultSet rs = PostgreSQLJDBC.Read("SELECT pet_id FROM pet p join species s on " +
+                        "(p.breed = s.breed) WHERE p.age = " + age.get() + " and s.species = " +
+                        PostgreSQLJDBC.S2S(species.get()) + ";");
+                int idx = 0;
+                while(rs.next())
+                {
+                    ids[idx] = rs.getString("pet_id");
+                    idx++;
+                }
+                PostgreSQLJDBC.CloseStatement();
+            }
+            catch (SQLException exp)
+            {
+                exp.printStackTrace();
+            }
+            result_session.UpdatePetList(ids);
+        };
+        search.addActionListener(filter);
+
+        filter_frame.getContentPane().add(BorderLayout.NORTH, filter_session);
+        //filter_frame.getContentPane().add(BorderLayout.CENTER, search);
+        filter_frame.getContentPane().add(BorderLayout.SOUTH,result_session);
+        filter_frame.setVisible(true);
+    }
+}
+
